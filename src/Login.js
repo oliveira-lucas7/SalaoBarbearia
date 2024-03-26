@@ -1,114 +1,144 @@
-import { Text, View, StyleSheet, Image, TextInput, TouchableOpacity } from "react-native";
-import { useState } from "react";
+import React, { useEffect, useState } from 'react';
+import { Text, View, StyleSheet, Image, TextInput, TouchableOpacity } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function Login() {
+export default function Login({ setLogado }) {
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
     const [naTelaDeCadastro, setNaTelaDeCadastro] = useState(false);
     const [tipoDeCadastro, setTipoDeCadastro] = useState(false);
-    const[ nome, setNome ] = useState("");
-    const[ nascimento, setNascimento ] = useState("");
-    const[ cpf, setCpf ] = useState("");
+    const [nome, setNome] = useState("");
+    const [nascimento, setNascimento] = useState("");
+    const [cpf, setCpf] = useState("");
+    const [salao, setSalao] = useState("");
+    const [cnpj, setCnpj] = useState("");
+    const [endereco, setEndereco] = useState("");
+    const [erro, setErro] = useState( false );
 
-    function handleLogin() {
-        // Lógica de autenticação aqui
+    async function handleLogin() {
+        
+        if( email == "lucas@gmail.com" && senha == "123")
+        {
+            await AsyncStorage.setItem('usuario', email);
+            setLogado(true);
+        } else 
+        {
+            setErro(true);
+        }
     }
 
     function alternarTela() {
         setNaTelaDeCadastro(!naTelaDeCadastro);
     }
 
-    function alternarCadastro()
-    {
+    function alternarCadastro() {
         setTipoDeCadastro(!tipoDeCadastro);
     }
 
     return (
         <>
             <View style={styles.container}>
-                <Image source={require('../assets/LogoBarbearia.png')} style={styles.imagem}/>
-                {/* <Text>Cadastro de Cliente</Text> */}
-                <Text style={styles.title}>{naTelaDeCadastro ? "Login" : "Cadastro"}</Text>
+                <Image source={require('../assets/LogoBarbearia.png')} style={styles.imagem} />
+                <Text style={styles.title}>{naTelaDeCadastro ? "Login" : tipoDeCadastro ? "Cadastro de Cliente" : "Cadastro de Barbeiro"}</Text>
             </View>
-            {naTelaDeCadastro ? 
-            <View style={styles.forms}>
-                <TextInput 
-                    placeholder="Seu Email" 
-                    style={styles.input}
-                    onChangeText={(digitado) => setEmail(digitado)}
-                    value={email}
-                />
-                <TextInput 
-                    placeholder="Sua Senha" 
-                    style={styles.input}
-                    onChangeText={(digitado) => setSenha(digitado)}
-                    value={senha}
-                    secureTextEntry={true}
-                />
-            </View>
-
-            :
-
-            <View style={styles.forms}>
-                <TextInput 
-                placeholder="Seu Nome" 
-                style={styles.input}
-                textInput={nome}    
-                onChangeText={ (digitado) => setNome(digitado)}
-                value={nome}
-                > 
-                </TextInput>
-
-                <TextInput 
-                placeholder="Data de nascimento" 
-                style={styles.input}
-                textInput={nascimento}  
-                onChangeText={ (digitado) => setNascimento(digitado)}
-                value={nascimento}
-                >                   
-                </TextInput>
-
-                <TextInput 
-                placeholder="Seu cpf" 
-                style={styles.input}
-                textInput={cpf}  
-                onChangeText={ (digitado) => setCpf(digitado)}
-                value={cpf}
-                >                   
-                </TextInput>
-
-                <TextInput 
-                placeholder="Seu email" 
-                style={styles.input}
-                textInput={email}  
-                onChangeText={ (digitado) => setEmail(digitado)}
-                value={email}
-                >                   
-                </TextInput>
-
-                <TextInput 
-                placeholder="Sua senha" 
-                style={styles.input}
-                textInput={senha}  
-                onChangeText={ (digitado) => setSenha(digitado)}
-                value={senha}
-                >                   
-                </TextInput>
-        </View>
-    }
-    
-        <View style={styles.containerButton}>
+            {naTelaDeCadastro ? (
+                <View style={styles.forms}>
+                    <TextInput
+                        placeholder="Seu Email"
+                        style={styles.input}
+                        onChangeText={(digitado) => setEmail(digitado)}
+                        value={email}
+                    />
+                    <TextInput
+                        placeholder="Sua Senha"
+                        style={styles.input}
+                        onChangeText={(digitado) => setSenha(digitado)}
+                        value={senha}
+                        secureTextEntry={true}
+                    />
+                </View>
+            ) : (
+                <View style={styles.forms}>
+                    {tipoDeCadastro ? (
+                        <View style={styles.container}>
+                            <TextInput
+                                placeholder="Seu Nome"
+                                style={styles.input}
+                                onChangeText={(digitado) => setNome(digitado)}
+                                value={nome}
+                            />
+                            <TextInput
+                                placeholder="Data de Nascimento"
+                                style={styles.input}
+                                onChangeText={(digitado) => setNascimento(digitado)}
+                                value={nascimento}
+                            />
+                            <TextInput
+                                placeholder="Seu CPF"
+                                style={styles.input}
+                                onChangeText={(digitado) => setCpf(digitado)}
+                                value={cpf}
+                            />
+                        </View>
+                    ) : (
+                        <View style={styles.container}>
+                            <TextInput
+                                placeholder="Nome do Salão"
+                                style={styles.input}
+                                onChangeText={(digitado) => setSalao(digitado)}
+                                value={salao}
+                            />
+                            <TextInput
+                                placeholder="Seu CNPJ ou CPF"
+                                style={styles.input}
+                                onChangeText={(digitado) => setCnpj(digitado)}
+                                value={cnpj}
+                            />
+                            <TextInput
+                                placeholder="Seu Endereço"
+                                style={styles.input}
+                                onChangeText={(digitado) => setEndereco(digitado)}
+                                value={endereco}
+                            />
+                        </View>
+                    )}
+                    <TextInput
+                        placeholder="Seu Email"
+                        style={styles.input}
+                        onChangeText={(digitado) => setEmail(digitado)}
+                        value={email}
+                    />
+                    <TextInput
+                        placeholder="Sua Senha"
+                        style={styles.input}
+                        onChangeText={(digitado) => setSenha(digitado)}
+                        value={senha}
+                        secureTextEntry={true}
+                    />
+                </View>
+            )}
+            <View style={styles.containerButton}>
                 <TouchableOpacity onPress={handleLogin} style={styles.login}>
-                    <Text style={styles.btnText}>{naTelaDeCadastro ? "Login" : "Cadastrar"}</Text>
+                    <Text style={styles.btnText}>{naTelaDeCadastro ? "Login" : tipoDeCadastro ? "Cadastrar" : "Cadastrar Salão"}</Text>
                 </TouchableOpacity>
+                {naTelaDeCadastro ? "" : tipoDeCadastro ? "" :
+                <TouchableOpacity style={styles.local}>
+                    <Text style={styles.btnText}>Usar Localização Atual</Text>
+                </TouchableOpacity>
+                }
                 <TouchableOpacity onPress={alternarTela}>
                     <Text style={styles.links}>
-                        {naTelaDeCadastro ? "Ainda não sou cadastrado" : "Já tenho cadastrado"}
+                        {naTelaDeCadastro ? "Ainda não sou Cadastrado" : "Já sou Cadastrado"}
                     </Text>
                 </TouchableOpacity>
-        </View>
+                <TouchableOpacity onPress={alternarCadastro}>
+                    <Text style={styles.linksSalao}>
+                        {naTelaDeCadastro ? "" : tipoDeCadastro ? "Cadastrar-Se Como Barbeiro" : "Cadastrar-Se Como Cliente"}
+                    </Text>
+                </TouchableOpacity>
+            </View>
         </>
-    )
+    );
 }
 
 
@@ -117,7 +147,7 @@ const styles = StyleSheet.create({
         width: "100%",
         display: "flex",
         alignItems: "center",
-        marginTop: "3%",
+        marginTop: "10%",
     },
     containerButton: {
         width: "100%",
@@ -129,8 +159,8 @@ const styles = StyleSheet.create({
         justifyContent: "center"
     },
     imagem: {
-        width: "75%",
-        height: "45%"
+        width: "50%",
+        height: "40%"
     },
     input: {
         width: "100%",
@@ -142,7 +172,7 @@ const styles = StyleSheet.create({
     },
     forms: {
         width: "90%",
-        marginTop: "-45%",
+        marginTop: "-50%",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -168,14 +198,38 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center"
     },
+
+    local: {
+        backgroundColor: "#ED2839",
+        color: "white",
+        width: "90%",
+        padding: 15,
+        borderRadius: 10,
+        marginTop: 5,
+        height: 60,
+        display: "flex",
+        margin: 'auto',
+        textAlign: "center",
+        alignItems: "center",
+        justifyContent: "center"
+    },
+
+
     links: {
         textAlign: "center",
         textDecorationLine: "underline",
         color: "blue",
         marginTop: 20
     },
+    linksSalao: {
+        textAlign: "center",
+        textDecorationLine: "underline",
+        color: "blue",
+        marginTop: 10,
+    },
     title: {
         fontSize: 22,
         marginTop: 5
-    }
+    },
+    
 })

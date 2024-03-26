@@ -1,8 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
+import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useRoute } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 //Components
@@ -13,7 +15,6 @@ import Agendar from './src/Agendar';
 import Favorito from './src/Favoritos';
 import AdicionarServico from './src/AdicionarServico';
 import Account from './src/Accout';
-import CadastroSalao from './src/CadastroSalao';
 import Login from './src/Login';
 import Menu from './src/Menu';
 import Servico from './src/Servico';
@@ -23,11 +24,32 @@ import Endereco from './src/Endereco';
 
   const Tab = createBottomTabNavigator();
 
+
   export default function App()
   {
+
+    const [logado, setLogado] = useState(false);
+
+    if( logado == false )
+    {
+      return ( <Login setLogado={setLogado}/> )
+    }
+
+    async function verificaUsuario()
+    {
+      const usuario = await AsyncStorage.getItem("usuario");
+      if( usuario != "" )
+      {
+        setLogado(true)
+      }
+    }
+
+    useEffect( () => {
+      verificaUsuario();
+    }, [])
+
     return(
       <>
-      {!Menu ? <Text></Text> :
         <NavigationContainer>
           <Tab.Navigator>
             <Tab.Screen 
@@ -71,26 +93,6 @@ import Endereco from './src/Endereco';
               }}
               />
                 <Tab.Screen 
-              name="Login" 
-              component={Login} 
-              options={{
-                tabBarLabel: 'Login',
-                tabBarIcon: ({ color, size }) => (
-                  <MaterialCommunityIcons name="account" color={color} size={size} />
-                ),
-              }}
-              />
-                {/* <Tab.Screen 
-              name="CadastroSalao" 
-              component={CadastroSalao} 
-              options={{
-                tabBarLabel: 'CadastroSalao',
-                tabBarIcon: ({ color, size }) => (
-                  <MaterialCommunityIcons name="account" color={color} size={size} />
-                ),
-              }}
-              /> */}
-                <Tab.Screen 
               name="Endereco" 
               component={Endereco} 
               options={{
@@ -102,7 +104,6 @@ import Endereco from './src/Endereco';
               />
           </Tab.Navigator>
         </NavigationContainer>
-         }
       </>
     )
   }
