@@ -62,7 +62,7 @@ export default function CadastroSalao()
                         <Text style={styles.btnText}>Usar Localização Atual</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={Salvar} style={styles.cadastro}>
-                        <Text style={styles.btnText}>Cadastrar Salão</Text>
+                        <Text style={styles.btnText}>Cadastrar Endereço</Text>
                     </TouchableOpacity>
             </View>
         </>

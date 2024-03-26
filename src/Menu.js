@@ -1,13 +1,10 @@
-import { Text, View, TouchableOpacity } from "react-native";
+import { View, Text } from 'react-native'
+import React from 'react'
 
-
-export default function Menu()
-{
-    return(
-        <View>
-            <View>
-                <TouchableOpacity></TouchableOpacity>
-            </View>
-        </View>
-    )
+export default function Menu() {
+  return (
+    <View>
+      <Text>Menu</Text>
+    </View>
+  )
 }

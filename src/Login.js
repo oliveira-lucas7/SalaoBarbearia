@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Text, View, StyleSheet, Image, TextInput, TouchableOpacity } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Login({ setLogado }) {
     const [email, setEmail] = useState("");
@@ -19,7 +19,7 @@ export default function Login({ setLogado }) {
         
         if( email == "lucas@gmail.com" && senha == "123")
         {
-            await AsyncStorage.setItem('usuario', email);
+            // await AsyncStorage.setItem('usuario', email);
             setLogado(true);
         } else 
         {
