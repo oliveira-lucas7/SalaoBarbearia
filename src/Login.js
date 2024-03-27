@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Text, View, StyleSheet, Image, TextInput, TouchableOpacity } from 'react-native';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
+//import AsyncStorage from '@react-native-async-storage/async-storage';
+import {UserContext} from './Context/UserContext'
 
-export default function Login({ setLogado }) {
+export default function Login() {
+
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
     const [naTelaDeCadastro, setNaTelaDeCadastro] = useState(false);
@@ -15,16 +17,11 @@ export default function Login({ setLogado }) {
     const [endereco, setEndereco] = useState("");
     const [erro, setErro] = useState( false );
 
-    async function handleLogin() {
+    const {Login} = useContext( UserContext );
+
+    function realizaLogin() {
         
-        if( email == "lucas@gmail.com" && senha == "123")
-        {
-            // await AsyncStorage.setItem('usuario', email);
-            setLogado(true);
-        } else 
-        {
-            setErro(true);
-        }
+        Login(email, senha)
     }
 
     function alternarTela() {
@@ -118,7 +115,7 @@ export default function Login({ setLogado }) {
                 </View>
             )}
             <View style={styles.containerButton}>
-                <TouchableOpacity onPress={handleLogin} style={styles.login}>
+                <TouchableOpacity onPress={realizaLogin} style={styles.login}>
                     <Text style={styles.btnText}>{naTelaDeCadastro ? "Login" : tipoDeCadastro ? "Cadastrar" : "Cadastrar Salão"}</Text>
                 </TouchableOpacity>
                 {naTelaDeCadastro ? "" : tipoDeCadastro ? "" :

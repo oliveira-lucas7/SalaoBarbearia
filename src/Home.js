@@ -1,5 +1,6 @@
-import { View, Text, FlatList, StyleSheet } from "react-native"
-import Saloes from "./Saloes"
+import React from "react";
+import { View, Text, FlatList, StyleSheet, TouchableOpacity } from "react-native";
+import Saloes from "./Saloes";
 
 const dados = [
     {
@@ -32,36 +33,30 @@ const dados = [
         titulo: "Salão 6",
         image: require('../assets/LogoBarbearia.png'),
     }
-]
+];
 
-    const renderItem = ({ item }) => (
-        <View style={{ flexDirection: 'row', alignItems: 'center', padding: 10 }}>
-        <Text style={{ flex: 1 }}>{item.nome}</Text>
+const renderItem = ({ item }) => (
+    <View style={{ flexDirection: 'row', alignItems: 'center', padding: 10 }}>
+        <Text style={{ flex: 1 }}>{item.titulo}</Text>
         <TouchableOpacity style={{ padding: 10, backgroundColor: 'blue', borderRadius: 5 }}>
             <Text style={{ color: 'white' }}>Botão</Text>
         </TouchableOpacity>
-        </View>
-    );
+    </View>
+);
 
-export default function Home( { navigation } )
-
-
-{
-    return(
+export default function Home({ navigation }) {
+    return (
         <View>
             <FlatList
                 data={dados}
-                renderItem={ ({item}) => 
-                <Saloes titulo={item.titulo} 
-                img={item.img}/>}
-                keyExtractor={ item => item.id}   
-                contentContainerStyle={styles.container}   
-                horizontal={false}  
+                renderItem={ ({item}) => <Saloes titulo={item.titulo} image={item.image} />}
+                keyExtractor={ item => item.id}
+                contentContainerStyle={styles.container}
+                horizontal={false}
                 numColumns={2}
             />
-
         </View>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
@@ -72,4 +67,4 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center"
     }
-})
+});
