@@ -1,140 +1,107 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, ScrollView } from "react-native";
+import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, ScrollView, Platform, Alert, Keyboard } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Calendar from 'expo-calendar'
-import uuid from 'react-native-get-random-values'
-
+import * as Calendar from 'expo-calendar';
+import { v4 as uuidv4 } from 'uuid';
+import uuid from "react-native-uuid";
 
 export default function Agendar() {
     const [salao, setSalao] = useState("");
     const [servico, setServico] = useState("");
-    const [horario, setHorario] = useState("");
+    const [dataEvento, setDataEvento] = useState("");
     const [tipoDeAgenda, setTipoDeAgenda] = useState(false);
     const [eventosAgendados, setEventosAgendados] = useState([]);
 
     useEffect(() => {
         carregarEventosAgendados();
+        getPermissions();
     }, []);
 
-
-    const [ agenda, setAgenda ] = useState();
-    const [ inicio, setInicio ] = useState();
-    const [ final, setFinal ] = useState();
-    const [ dados, setDados ] = useState([]);
-
-
-    async function getPermissions() {
+    const getPermissions = async () => {
         const { status } = await Calendar.requestCalendarPermissionsAsync();
-        if (status === 'granted') 
-        {
-            const calendars = await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT);
+        if (status !== 'granted') {
+            Alert.alert('Permissão Necessária', 'É necessário permitir o acesso ao calendário para agendar eventos.');
         }
-    }
-
-    useEffect(() => {
-        getPermissions();
-    }, [])
-
-
-    async function Salvar()
-    {
-        
-        if(agenda != undefined && inicio != undefined && final != undefined)
-        {
-            Keyboard.dismiss()
-            const evento = {
-                id: uuid.v4(),
-                nome: agenda,
-                inicio: inicio,
-                final: final
-            };
-            const novoEvento = [...dados , evento]
-            setDados( novoEvento );
-            setAgenda("");
-            setInicio("");
-            setFinal("");
-
-            const defaultCalendarSource =
-            Platform.OS === 'ios'
-              ? await Calendar.getDefaultCalendarAsync()
-              : { isLocalAccount: true, name: 'Expo Calendar' };
-
-              const newCalendarID = await Calendar.createCalendarAsync({
-                title: 'Expo Calendar',
-                color: 'blue',
-                entityType: Calendar.EntityTypes.EVENT,
-                sourceId: defaultCalendarSource.id,
-                source: defaultCalendarSource,
-                name: 'internalCalendarName',
-                ownerAccount: 'personal',
-                accessLevel: Calendar.CalendarAccessLevel.OWNER,
-              });
-
-
-              let inicioDataHora = inicio.split(" ");
-              let inicioData = inicioDataHora[0].split("-");
-              let inicioHora = inicioDataHora[1].split(".");
-
-              let finalDataHora = final.split(" ");
-              let finalData = finalDataHora[0].split("-");
-              let finalHora = finalDataHora[1].split(".");
-
-
-
-              const newEvent = {
-                title: agenda,
-                startDate: new Date(inicioData[2], inicioData[1] -1 , inicioData[0], inicioHora[0], inicioHora[1]),
-                endDate: new Date(finalData[2], finalData[1] -1 , finalData[0], finalHora[0], finalHora[1]),
-                localtion: 'Sesi',
-                notes: 'Meteoro da Paixão',
-              };
-
-              try {
-                await Calendar.createEventAsync(newCalendarID, newEvent);
-                alert('Evento criado com sucesso!')
-              } catch(error) {
-                alert(`Erro ao criar evento! ${error}`);
-              }
-
-        }       
-        else
-        {
-            Alert.alert('Campos Incompletos', 'Por favor, preencha todos os campos.');
-        }
-    }
-
-
-
+    };
 
     const salvarEvento = async () => {
+        if (!salao || !servico || !dataEvento) {
+            Alert.alert('Campos Incompletos', 'Por favor, preencha todos os campos.');
+            return;
+        }
+
+        const novoEvento = { id: uuid.v4(), salao, servico, dataEvento };
         try {
-            const novoEvento = { salao, servico, horario };
             const novosEventos = [...eventosAgendados, novoEvento];
             await AsyncStorage.setItem('eventosAgendados', JSON.stringify(novosEventos));
             setEventosAgendados(novosEventos);
             limparCampos();
             setTipoDeAgenda(true);
+            criarEventoNoCalendario(novoEvento);
         } catch (error) {
             console.error('Erro ao salvar evento:', error);
+            Alert.alert('Erro', 'Não foi possível salvar o evento. Por favor, tente novamente.');
+        }
+    };
+
+    const criarEventoNoCalendario = async (evento) => {
+        try {
+            const calendars = await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT);
+            let expoCalendar = calendars.find(calendar => calendar.title === 'Expo Calendar');
+            if (!expoCalendar) {
+                const defaultCalendarSource = Platform.OS === 'ios' ?
+                    await Calendar.getDefaultCalendarAsync() :
+                    { isLocalAccount: true, name: 'Expo Calendar' };
+
+                expoCalendar = await Calendar.createCalendarAsync({
+                    title: 'Expo Calendar',
+                    color: 'blue',
+                    entityType: Calendar.EntityTypes.EVENT,
+                    sourceId: defaultCalendarSource.id,
+                    source: defaultCalendarSource,
+                    name: 'internalCalendarName',
+                    ownerAccount: 'personal',
+                    accessLevel: Calendar.CalendarAccessLevel.OWNER,
+                });
+            }
+
+            const { salao, servico, dataEvento } = evento;
+            const [ano, mes, dia] = dataEvento.split("-").map(Number);
+            const dataInicio = new Date(ano, mes - 1, dia);
+            const dataFim = new Date(ano, mes - 1, dia + 1); // Define o próximo dia como fim
+
+            const newEvent = {
+                title: `${salao} - ${servico}`,
+                startDate: dataInicio,
+                endDate: dataFim,
+                location: 'Local do Evento',
+                notes: 'Detalhes do Evento',
+            };
+
+            await Calendar.createEventAsync(expoCalendar.id, newEvent);
+            Alert.alert('Evento Criado', 'O evento foi criado com sucesso!');
+        } catch (error) {
+            console.error('Erro ao criar evento no calendário:', error);
+            Alert.alert('Erro', `Não foi possível criar o evento no calendário. Erro: ${error}`);
         }
     };
 
     const carregarEventosAgendados = async () => {
         try {
             const eventosJSON = await AsyncStorage.getItem('eventosAgendados');
-            if (eventosJSON !== null) {
-                const eventos = JSON.parse(eventosJSON);
-                setEventosAgendados(eventos);
+            if (eventosJSON) {
+                setEventosAgendados(JSON.parse(eventosJSON));
             }
         } catch (error) {
             console.error('Erro ao carregar eventos agendados:', error);
+            Alert.alert('Erro', 'Não foi possível carregar os eventos agendados.');
         }
     };
 
     const limparCampos = () => {
         setSalao("");
         setServico("");
-        setHorario("");
+        setDataEvento("");
     };
 
     const limparEventos = async () => {
@@ -143,14 +110,8 @@ export default function Agendar() {
             setEventosAgendados([]);
         } catch (error) {
             console.error('Erro ao limpar eventos agendados:', error);
+            Alert.alert('Erro', 'Não foi possível limpar os eventos agendados.');
         }
-    };
-
-    const alternarAgenda = () => {
-        if (salao !== "" && servico !== "" && horario !== "") {
-            salvarEvento();
-        }
-        setTipoDeAgenda(!tipoDeAgenda);
     };
 
     const excluirEvento = async (index) => {
@@ -160,13 +121,13 @@ export default function Agendar() {
             setEventosAgendados(novosEventos);
         } catch (error) {
             console.error('Erro ao excluir evento:', error);
+            Alert.alert('Erro', 'Não foi possível excluir o evento.');
         }
     };
 
-
-
     return (
         <>
+            <ScrollView>
             <View style={styles.container}>
                 <Image source={require('../assets/LogoBarbearia.png')} style={styles.imagem} />
                 <Text style={styles.title}>{tipoDeAgenda ? "Agendar" : "Agendados"}</Text>
@@ -186,10 +147,10 @@ export default function Agendar() {
                         value={servico}
                     />
                     <TextInput
-                        placeholder="Horário"
+                        placeholder="Data do Evento (YYYY-MM-DD)"
                         style={styles.input}
-                        onChangeText={setHorario}
-                        value={horario}
+                        onChangeText={setDataEvento}
+                        value={dataEvento}
                     />
                 </View>
             ) : (
@@ -198,7 +159,7 @@ export default function Agendar() {
                         <View key={index} style={styles.formsAgendado}>
                             <Text>Nome do Salão: {evento.salao}</Text>
                             <Text>Nome do Evento: {evento.servico}</Text>
-                            <Text>Horário: {evento.horario}</Text>
+                            <Text>Data do Evento: {evento.dataEvento}</Text>
                             <TouchableOpacity onPress={() => excluirEvento(index)} style={styles.excluirBtn}>
                                 <Text style={styles.btnText}>Excluir</Text>
                             </TouchableOpacity>
@@ -206,9 +167,10 @@ export default function Agendar() {
                     ))}
                 </ScrollView>
             )}
+            </ScrollView>
             <View style={styles.containerButton}>
                 {!tipoDeAgenda ? "" : (
-                    <TouchableOpacity onPress={alternarAgenda} style={styles.login}>
+                    <TouchableOpacity onPress={salvarEvento} style={styles.login}>
                         <Text style={styles.btnText}>Agendar Evento</Text>
                     </TouchableOpacity>
                 )}
@@ -217,7 +179,7 @@ export default function Agendar() {
                         <Text style={styles.btnText}>Apagar Tudo</Text>
                     </TouchableOpacity>
                 )}
-                <TouchableOpacity onPress={alternarAgenda} style={styles.login}>
+                <TouchableOpacity onPress={() => setTipoDeAgenda(!tipoDeAgenda)} style={styles.login}>
                     <Text style={styles.btnText}>{tipoDeAgenda ? "Agendados" : "Agendar"}</Text>
                 </TouchableOpacity>
             </View>
