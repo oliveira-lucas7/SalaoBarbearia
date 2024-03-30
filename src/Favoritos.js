@@ -1,19 +1,52 @@
-import React from 'react';
-import { View, FlatList } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, FlatList, Text, StyleSheet } from 'react-native';
 import Salao from './Saloes';
 import { useFavoritos } from '../src/Context/FavoritosContext';
+import * as Network from 'expo-network';
 
-export default function Favoritos() {
+export default function Favoritos({ titulo, imagem }) {
   const { favoritos } = useFavoritos();
+  const [rede, setRede] = useState(false);
+
+  async function getStatus() {
+    const status = await Network.getNetworkStateAsync();
+    if (status.isConnected && status.type === Network.NetworkStateType.WIFI) {
+      setRede(true);
+    } else {
+      setRede(false);
+    }
+  }
+
+  useEffect(() => {
+    getStatus();
+  }, []);
+
+  useEffect(() => {
+    getStatus();
+  }, [rede]);
 
   return (
     <View>
-      <FlatList
-        data={favoritos}
-        renderItem={({ item }) => <Salao titulo={item} image={item.image} />} // Passar também a propriedade image
-        keyExtractor={(item) => item.id} // Use a propriedade id como chave
-        numColumns={2} // Definir dois itens por coluna
-      />
+      {rede ? (
+        <FlatList
+          data={favoritos}
+          renderItem={({ item }) => (
+            <Salao titulo={item} image={item} />
+          )}
+          keyExtractor={(item) => item.id}
+          numColumns={2}
+        />
+      ) : (
+        <Text style={styles.textInternet}>Conecte-se a internet para ver os seus salões favoritos</Text>
+      )}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  textInternet: {
+    textAlign: "center",
+    justifyContent: "center",
+    fontSize: 25,
+  },
+})
