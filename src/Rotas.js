@@ -7,6 +7,7 @@ import Agendar from './Agendar';
 import Menu from './Menu';
 import Favoritos from './Favoritos';
 import Login from './Login';
+import Endereco from './Endereco'
 import { UserContext } from './Context/UserContext';
 
 const Tab = createBottomTabNavigator();
@@ -56,10 +57,20 @@ export default function Rotas() {
           }}
         />
         <Tab.Screen
-          name="Menu"
-          component={Menu}
+          name="Login"
+          component={Login}
           options={{
-            tabBarLabel: 'Menu',
+            tabBarLabel: 'Login',
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="account" color={color} size={size} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Endereco"
+          component={Endereco}
+          options={{
+            tabBarLabel: 'Endereco',
             tabBarIcon: ({ color, size }) => (
               <MaterialCommunityIcons name="account" color={color} size={size} />
             ),

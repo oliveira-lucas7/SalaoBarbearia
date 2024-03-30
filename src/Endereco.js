@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
         width: "100%",
         display: "flex",
         alignItems: "center",
-        marginTop: 50,
+        marginTop: -2,
     },
     imagem: {
         width: "70%",
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
         height: 60,
         borderBottomWidth: 2,
         padding: 2,
-        marginTop: 20,
+        marginTop: 40,
         marginVertical: 10,
         display: "flex",
     },
