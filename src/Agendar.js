@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, ScrollView } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Calendar from 'expo-calendar'
+import uuid from 'react-native-get-random-values'
 
 
 export default function Agendar() {
@@ -13,6 +15,96 @@ export default function Agendar() {
     useEffect(() => {
         carregarEventosAgendados();
     }, []);
+
+
+    const [ agenda, setAgenda ] = useState();
+    const [ inicio, setInicio ] = useState();
+    const [ final, setFinal ] = useState();
+    const [ dados, setDados ] = useState([]);
+
+
+    async function getPermissions() {
+        const { status } = await Calendar.requestCalendarPermissionsAsync();
+        if (status === 'granted') 
+        {
+            const calendars = await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT);
+        }
+    }
+
+    useEffect(() => {
+        getPermissions();
+    }, [])
+
+
+    async function Salvar()
+    {
+        
+        if(agenda != undefined && inicio != undefined && final != undefined)
+        {
+            Keyboard.dismiss()
+            const evento = {
+                id: uuid.v4(),
+                nome: agenda,
+                inicio: inicio,
+                final: final
+            };
+            const novoEvento = [...dados , evento]
+            setDados( novoEvento );
+            setAgenda("");
+            setInicio("");
+            setFinal("");
+
+            const defaultCalendarSource =
+            Platform.OS === 'ios'
+              ? await Calendar.getDefaultCalendarAsync()
+              : { isLocalAccount: true, name: 'Expo Calendar' };
+
+              const newCalendarID = await Calendar.createCalendarAsync({
+                title: 'Expo Calendar',
+                color: 'blue',
+                entityType: Calendar.EntityTypes.EVENT,
+                sourceId: defaultCalendarSource.id,
+                source: defaultCalendarSource,
+                name: 'internalCalendarName',
+                ownerAccount: 'personal',
+                accessLevel: Calendar.CalendarAccessLevel.OWNER,
+              });
+
+
+              let inicioDataHora = inicio.split(" ");
+              let inicioData = inicioDataHora[0].split("-");
+              let inicioHora = inicioDataHora[1].split(".");
+
+              let finalDataHora = final.split(" ");
+              let finalData = finalDataHora[0].split("-");
+              let finalHora = finalDataHora[1].split(".");
+
+
+
+              const newEvent = {
+                title: agenda,
+                startDate: new Date(inicioData[2], inicioData[1] -1 , inicioData[0], inicioHora[0], inicioHora[1]),
+                endDate: new Date(finalData[2], finalData[1] -1 , finalData[0], finalHora[0], finalHora[1]),
+                localtion: 'Sesi',
+                notes: 'Meteoro da Paixão',
+              };
+
+              try {
+                await Calendar.createEventAsync(newCalendarID, newEvent);
+                alert('Evento criado com sucesso!')
+              } catch(error) {
+                alert(`Erro ao criar evento! ${error}`);
+              }
+
+        }       
+        else
+        {
+            Alert.alert('Campos Incompletos', 'Por favor, preencha todos os campos.');
+        }
+    }
+
+
+
 
     const salvarEvento = async () => {
         try {
@@ -70,6 +162,8 @@ export default function Agendar() {
             console.error('Erro ao excluir evento:', error);
         }
     };
+
+
 
     return (
         <>

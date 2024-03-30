@@ -26,5 +26,33 @@
     "web": {
       "favicon": "./assets/favicon.png"
     }
-  }
+  },
+    "plugins": [
+      [
+        "expo-calendar",
+        {
+          "calendarPermission": "Nosso aplicativo precisa de permissão para acessar o calendário."
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
+          "recordAudioAndroid": true
+        }
+      ],
+      [
+        "expo-contacts",
+        {
+          "contactsPermission": "Allow $(PRODUCT_NAME) to access your contacts."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
+      ]
+    ]
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image } from "react-native";
 import Saloes from "./Saloes";
 
 const dados = [
@@ -30,7 +30,37 @@ const dados = [
     },
     {
         id: "06",
-        titulo: "Salão 6",
+        titulo: "Salão 06",
+        image: require('../assets/LogoBarbearia.png'),
+    },
+    {
+        id: "07",
+        titulo: "Salão 07",
+        image: require('../assets/LogoBarbearia.png'),
+    },
+    {
+        id: "08",
+        titulo: "Salão 08",
+        image: require('../assets/LogoBarbearia.png'),
+    },
+    {
+        id: "09",
+        titulo: "Salão 09",
+        image: require('../assets/LogoBarbearia.png'),
+    },
+    {
+        id: "10",
+        titulo: "Salão 10",
+        image: require('../assets/LogoBarbearia.png'),
+    },
+    {
+        id: "11",
+        titulo: "Salão 11",
+        image: require('../assets/LogoBarbearia.png'),
+    },
+    {
+        id: "12",
+        titulo: "Salão 12",
         image: require('../assets/LogoBarbearia.png'),
     }
 ];
@@ -38,9 +68,6 @@ const dados = [
 const renderItem = ({ item }) => (
     <View style={{ flexDirection: 'row', alignItems: 'center', padding: 10 }}>
         <Text style={{ flex: 1 }}>{item.titulo}</Text>
-        <TouchableOpacity style={{ padding: 10, backgroundColor: 'blue', borderRadius: 5 }}>
-            <Text style={{ color: 'white' }}>Botão</Text>
-        </TouchableOpacity>
     </View>
 );
 
@@ -66,5 +93,13 @@ const styles = StyleSheet.create({
         padding: 20,
         justifyContent: "center",
         alignItems: "center"
+    },
+    button: {
+        padding: 10,
+        backgroundColor: 'blue',
+        borderRadius: 5,
+    },
+    buttonText: {
+        color: 'black',
     }
 });

@@ -11,11 +11,18 @@ export default function Salao({ titulo, imagem }) {
       <Text style={styles.title}>{titulo}</Text>
       <Image source={imagem} style={styles.img} />
       <TouchableOpacity onPress={() => toggleFavorito(titulo)} style={styles.ContainerButDois}>
-        {isFavorito(titulo) ? (
-          <MaterialCommunityIcons name="heart" style={styles.butUm} />
-        ) : (
-          <MaterialCommunityIcons name="heart-outline" style={styles.butUm} />
-        )}
+        <View>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Serviços</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.butBottom}>
+          <TouchableOpacity>          
+            <MaterialCommunityIcons name="calendar-month" style={styles.butUm} />
+          </TouchableOpacity>
+          {/* <MaterialCommunityIcons name="calendar-month" style={styles.butUm} /> */}
+          <MaterialCommunityIcons name={isFavorito(titulo) ? "heart" : "heart-outline"} style={styles.butUm} />
+        </View>
       </TouchableOpacity>
     </View>
   );
@@ -75,5 +82,17 @@ const styles = StyleSheet.create({
       paddingLeft: 35,
       paddingRight: 35,
       bottom: 15,
+    },
+    button: {
+      paddingHorizontal: 40,
+      paddingVertical: 7,
+      marginBottom: 20,
+      borderWidth: 2,
+      borderRadius: 5,
+    },
+    butBottom: {
+      display: 'flex',
+      flexDirection: "row",
+      justifyContent: 'space-between'
     }
 });
