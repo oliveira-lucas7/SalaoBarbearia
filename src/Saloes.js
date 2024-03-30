@@ -1,25 +1,24 @@
-import React from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import React from 'react';
+import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { useFavoritos } from '../src/Context/FavoritosContext'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export default function Saloes({ titulo, image }) {
-    return (
-        <View style={styles.item}>
-            <Text style={styles.title}>{titulo}</Text>
-            <Image source={image} style={styles.img} />
-            <TouchableOpacity style={styles.servico}>
-              <Text>Serviços</Text>
-            </TouchableOpacity>
-            <View style={styles.buttoms}>
-              <TouchableOpacity style={styles.ContainerButUm}>
-                <MaterialCommunityIcons name="calendar-month-outline" style={styles.butUm}/>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.ContainerButDois}>
-                <MaterialCommunityIcons name="heart-outline" style={styles.butUm}/>
-              </TouchableOpacity>
-            </View>
-        </View>
-    );
+export default function Salao({ titulo, imagem }) {
+  const { toggleFavorito, isFavorito } = useFavoritos();
+
+  return (
+    <View style={styles.item}>
+      <Text style={styles.title}>{titulo}</Text>
+      <Image source={imagem} style={styles.img} />
+      <TouchableOpacity onPress={() => toggleFavorito(titulo)} style={styles.ContainerButDois}>
+        {isFavorito(titulo) ? (
+          <MaterialCommunityIcons name="heart" style={styles.butUm} />
+        ) : (
+          <MaterialCommunityIcons name="heart-outline" style={styles.butUm} />
+        )}
+      </TouchableOpacity>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
