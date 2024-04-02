@@ -1,67 +1,67 @@
 import React from "react";
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { View, Text, FlatList, StyleSheet } from "react-native";
 import Saloes from "./Saloes";
 
 const dados = [
     {
         id: "01",
         titulo: "Salão 1",
-        image: require('../assets/LogoBarbearia.png'),
+        image: require('../images/SalaoUm.jpg'),
     },
     {
         id: "02",
         titulo: "Salão 2",
-        image: require('../assets/LogoBarbearia.png'),
+        image: require('../images/SalaoDois.jpg'),
     },
     {
         id: "03",
         titulo: "Salão 3",
-        image: require('../assets/LogoBarbearia.png'),
+        image: require('../images/SalaoTres.jpg'),
     },
     {
         id: "04",
         titulo: "Salão 4",
-        image: require('../assets/LogoBarbearia.png'),
+        image: require('../images/SalaoQuatro.jpg'),
     },
     {
         id: "05",
         titulo: "Salão 5",
-        image: require('../assets/LogoBarbearia.png'),
+        image: require('../images/SalaoCinco.jpg'),
     },
     {
         id: "06",
         titulo: "Salão 06",
-        image: require('../assets/LogoBarbearia.png'),
+        image: require('../images/SalaoSeis.jpg'),
     },
     {
         id: "07",
         titulo: "Salão 07",
-        image: require('../assets/LogoBarbearia.png'),
+        image: require('../images/SalaoSete.jpg'),
     },
     {
         id: "08",
         titulo: "Salão 08",
-        image: require('../assets/LogoBarbearia.png'),
+        image: require('../images/SalaoOito.jpg'),
     },
     {
         id: "09",
         titulo: "Salão 09",
-        image: require('../assets/LogoBarbearia.png'),
+        image: require('../images/SalaoNove.jpg'),
     },
     {
         id: "10",
         titulo: "Salão 10",
-        image: require('../assets/LogoBarbearia.png'),
+        image: require('../images/SalaoDez.jpg'),
     },
     {
         id: "11",
         titulo: "Salão 11",
-        image: require('../assets/LogoBarbearia.png'),
+        image: require('../images/SalaoOnze.jpg'),
     },
     {
         id: "12",
         titulo: "Salão 12",
-        image: require('../assets/LogoBarbearia.png'),
+        image: require('../images/SalaoDoze.jpeg'),
     }
 ];
 
@@ -73,16 +73,16 @@ const renderItem = ({ item }) => (
 
 export default function Home({ navigation }) {
     return (
-        <View>
-            <FlatList
-                data={dados}
-                renderItem={ ({item}) => <Saloes titulo={item.titulo} image={item.image} />}
-                keyExtractor={ item => item.id}
-                contentContainerStyle={styles.container}
-                horizontal={false}
-                numColumns={2}
-            />
-        </View>
+      <View>
+        <FlatList
+          data={dados}
+          renderItem={({ item }) => <Saloes titulo={item.titulo} imagem={item.image} />}
+          keyExtractor={item => item.id}
+          contentContainerStyle={styles.container}
+          horizontal={false}
+          numColumns={2}
+        />
+      </View>
     );
 }
 

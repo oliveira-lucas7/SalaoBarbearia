@@ -31,7 +31,7 @@ export default function Favoritos({ titulo, imagem }) {
         <FlatList
           data={favoritos}
           renderItem={({ item }) => (
-            <Salao titulo={item} image={item} />
+            <Salao titulo={item} imagem={item.image} />
           )}
           keyExtractor={(item) => item.id}
           numColumns={2}
