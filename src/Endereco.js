@@ -1,102 +1,85 @@
-import { Image, Text, View, StyleSheet, TextInput, TouchableOpacity } from "react-native";
+import { Image, Text, View, StyleSheet, TextInput, TouchableOpacity, ScrollView, Dimensions } from "react-native";
 import { useState } from "react";
 
-export default function CadastroSalao()
-{
+export default function CadastroSalao() {
+    const [rua, setRua] = useState("");
+    const [bairro, setBairro] = useState("");
+    const [casa, setCasa] = useState("");
+    const [cep, setCep] = useState("");
 
-    const[ rua, setRua ] = useState("");
-    const[ bairro, setBairro ] = useState("");
-    const[ casa, setCasa ] = useState("");
-    const[ cep, setCep ] = useState("");
-
-    function Salvar()
-    {
-        
+    function Salvar() {
+        // Implemente a lógica de salvar aqui
     }
 
-    return(
-        <>
+    return (
+        <ScrollView contentContainerStyle={styles.scrollViewContainer} keyboardShouldPersistTaps="handled">
             <View style={styles.container}>
-                <Image source={require('../assets/LogoBarbearia.png')} style={styles.imagem}/>
+                <Image source={require('../assets/LogoBarbearia.png')} style={styles.imagem} resizeMode="contain"/>
                 {/* <Text>Cadastro de Cliente</Text> */}
             </View>
-
             <View style={styles.forms}>
-                    <TextInput 
-                    placeholder="Nome da Rua" 
+                <TextInput
+                    placeholder="Nome da Rua"
                     style={styles.input}
-                    textInput={rua}    
-                    onChangeText={ (digitado) => setRua(digitado)}
                     value={rua}
-                    > 
-                    </TextInput>
-
-                    <TextInput 
-                    placeholder="Seu CNPJ" 
+                    onChangeText={(digitado) => setRua(digitado)}
+                />
+                <TextInput
+                    placeholder="Seu CNPJ"
                     style={styles.input}
-                    textInput={bairro}  
-                    onChangeText={ (digitado) => setBairro(digitado)}
                     value={bairro}
-                    >                   
-                    </TextInput>
-
-                    <TextInput 
-                    placeholder="Seu Endereço" 
+                    onChangeText={(digitado) => setBairro(digitado)}
+                />
+                <TextInput
+                    placeholder="Seu Endereço"
                     style={styles.input}
-                    textInput={casa}  
-                    onChangeText={ (digitado) => setCasa(digitado)}
                     value={casa}
-                    >                   
-                    </TextInput>
-
-                    <TextInput 
-                    placeholder="Seu Email" 
+                    onChangeText={(digitado) => setCasa(digitado)}
+                />
+                <TextInput
+                    placeholder="Seu Email"
                     style={styles.input}
-                    textInput={cep}  
-                    onChangeText={ (digitado) => setCep(digitado)}
                     value={cep}
-                    >                   
-                    </TextInput>
-
-                    <TouchableOpacity onPress={Salvar} style={styles.localizacao}>
-                        <Text style={styles.btnText}>Usar Localização Atual</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={Salvar} style={styles.cadastro}>
-                        <Text style={styles.btnText}>Cadastrar Endereço</Text>
-                    </TouchableOpacity>
+                    onChangeText={(digitado) => setCep(digitado)}
+                />
+                <TouchableOpacity onPress={Salvar} style={styles.localizacao}>
+                    <Text style={styles.btnText}>Usar Localização Atual</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={Salvar} style={styles.cadastro}>
+                    <Text style={styles.btnText}>Cadastrar Endereço</Text>
+                </TouchableOpacity>
             </View>
-        </>
-    )
+        </ScrollView>
+    );
 }
 
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+
 const styles = StyleSheet.create({
+    scrollViewContainer: {
+        flexGrow: 1,
+    },
     container: {
-        width: "100%",
-        display: "flex",
         alignItems: "center",
-        marginTop: -2,
+        marginTop: 20,
     },
     imagem: {
-        width: "70%",
-        height: "50%"
+        width: windowWidth * 0.7, // Definindo a largura da imagem como 70% da largura da tela
+        height: windowHeight * 0.3, // Definindo a altura da imagem como 30% da altura da tela
     },
     input: {
         width: "100%",
         height: 60,
         borderBottomWidth: 2,
         padding: 2,
-        marginTop: 40,
-        marginVertical: 10,
-        display: "flex",
+        marginTop: 10, // Reduzindo a margem superior dos inputs
     },
     forms: {
         width: "90%",
-        marginTop: "-55%",
-        display: "flex",
-        justifyContent: "center",
         alignItems: "center",
         alignSelf: "center",
-        // marginTop: 10,
+        marginTop: -50,
     },
     cadastro: {
         backgroundColor: "#365CAB",
@@ -106,16 +89,17 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginTop: 10,
         height: 60,
+        justifyContent: "center",
+        alignItems: "center",
     },
     btnText: {
-        textAlign: "center",
         color: "white",
         fontSize: 20,
     },
     salao: {
         textAlign: "center",
         textDecorationLine: "underline",
-        color: "blue"
+        color: "blue",
     },
     localizacao: {
         backgroundColor: "#ED2839",
@@ -125,5 +109,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginTop: 10,
         height: 60,
-    }
-})
+        justifyContent: "center",
+        alignItems: "center",
+    },
+});

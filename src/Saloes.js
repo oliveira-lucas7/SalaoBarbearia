@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { useFavoritos } from '../src/Context/FavoritosContext'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -11,16 +11,7 @@ export default function Salao({ titulo, imagem }) {
       <Text style={styles.title}>{titulo}</Text>
       <Image source={imagem} style={styles.img} />
       <TouchableOpacity onPress={() => toggleFavorito(titulo)} style={styles.ContainerButDois}>
-        <View>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Serviços</Text>
-          </TouchableOpacity>
-        </View>
         <View style={styles.butBottom}>
-          <TouchableOpacity>          
-            <MaterialCommunityIcons name="calendar-month" style={styles.butUm} />
-          </TouchableOpacity>
-          {/* <MaterialCommunityIcons name="calendar-month" style={styles.butUm} /> */}
           <MaterialCommunityIcons name={isFavorito(titulo) ? "heart" : "heart-outline"} style={styles.butUm} />
         </View>
       </TouchableOpacity>
@@ -84,15 +75,20 @@ const styles = StyleSheet.create({
       bottom: 15,
     },
     button: {
-      paddingHorizontal: 40,
+      width: 140,
       paddingVertical: 7,
       marginBottom: 20,
       borderWidth: 2,
       borderRadius: 5,
+      textAlign: "center",
+      alignItems: "center"
     },
     butBottom: {
       display: 'flex',
       flexDirection: "row",
       justifyContent: 'space-between'
+    },
+    buttonText: {
+      fontSize: 14,
     }
 });
