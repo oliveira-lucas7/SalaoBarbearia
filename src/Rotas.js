@@ -57,16 +57,6 @@ export default function Rotas() {
           }}
         />
         <Tab.Screen
-          name="Login"
-          component={Login}
-          options={{
-            tabBarLabel: 'Login',
-            tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons name="account" color={color} size={size} />
-            ),
-          }}
-        />
-        <Tab.Screen
           name="Endereco"
           component={Endereco}
           options={{

@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { View, FlatList, StyleSheet, Text, Image, useWindowDimensions } from 'react-native';
+import { View, FlatList, StyleSheet, Text, Image, useWindowDimensions, ScrollView } from 'react-native';
 import Saloes from './Saloes'
 
 const dados = [
@@ -147,7 +147,7 @@ const Carrossel = () => {
         return (
             <Image
                 source={item.image}
-                style={[styles.imagem, { width: screenWidth }]}
+                style={[styles.imagem, { width: screenWidth - 40 }]} // Largura da imagem um pouco menor que a largura da tela e margens de 20 pixels em cada lado
                 resizeMode="cover"
             />
         );
@@ -176,7 +176,7 @@ const Carrossel = () => {
 
 export default function Home({ navigation }) {
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <Carrossel />
             <FlatList
                 data={dados}
@@ -186,7 +186,7 @@ export default function Home({ navigation }) {
                 horizontal={false}
                 numColumns={2}
             />
-        </View>
+        </ScrollView>
     );
 }
 
@@ -195,14 +195,22 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     flatListContainer: {
-        padding: 20,
+        padding: 10,
         justifyContent: "center",
         alignItems: "center",
     },
     carrosselContainer: {
-        height: 200,
+        height: 240,
+        display: "flex",
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        // elevation: 2
     },
     imagem: {
         height: '100%',
+        marginLeft: 20,
+        marginRight: 20,
+        marginTop: 20,
+        borderRadius: 8,
     },
 });
