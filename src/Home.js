@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     flatListContainer: {
-        padding: 10,
+        padding: 5,
         justifyContent: "center",
         alignItems: "center",
     },
