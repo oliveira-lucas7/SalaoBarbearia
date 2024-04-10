@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, ScrollView, Platform, Alert, Keyboard } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Calendar from 'expo-calendar';
+import { useBatteryLevel } from 'expo-battery';
 import { v4 as uuidv4 } from 'uuid';
 import uuid from "react-native-uuid";
 
@@ -11,11 +12,18 @@ export default function Agendar() {
     const [dataEvento, setDataEvento] = useState("");
     const [tipoDeAgenda, setTipoDeAgenda] = useState(false);
     const [eventosAgendados, setEventosAgendados] = useState([]);
+    const [ bateria, setBateria ] = useState();
+
+    const batteryLevel = useBatteryLevel();
 
     useEffect(() => {
         carregarEventosAgendados();
         getPermissions();
     }, []);
+
+    useEffect( () => {
+        setBateria( (batteryLevel * 100).toFixed(0));
+    }, [batteryLevel])
 
     const getPermissions = async () => {
         const { status } = await Calendar.requestCalendarPermissionsAsync();
@@ -127,65 +135,71 @@ export default function Agendar() {
 
     return (
         <>
-            <ScrollView>
-            <View style={styles.container}>
-                <Image source={require('../assets/LogoBarbearia.png')} style={styles.imagem} />
-                <Text style={styles.title}>{tipoDeAgenda ? "Agendar" : "Agendados"}</Text>
-            </View>
-            {tipoDeAgenda ? (
-                <View style={styles.forms}>
-                    <TextInput
-                        placeholder="Salão"
-                        style={styles.input}
-                        onChangeText={setSalao}
-                        value={salao}
-                    />
-                    <TextInput
-                        placeholder="Serviço"
-                        style={styles.input}
-                        onChangeText={setServico}
-                        value={servico}
-                    />
-                    <TextInput
-                        placeholder="Data do Evento (YYYY-MM-DD)"
-                        style={styles.input}
-                        onChangeText={setDataEvento}
-                        value={dataEvento}
-                    />
-                </View>
-            ) : (
-                <ScrollView style={styles.containerAgendados}>
-                    {eventosAgendados.map((evento, index) => (
-                        <View key={index} style={styles.formsAgendado}>
-                            <Text>Nome do Salão: {evento.salao}</Text>
-                            <Text>Nome do Evento: {evento.servico}</Text>
-                            <Text>Data do Evento: {evento.dataEvento}</Text>
-                            <TouchableOpacity onPress={() => excluirEvento(index)} style={styles.excluirBtn}>
-                                <Text style={styles.btnText}>Excluir</Text>
-                            </TouchableOpacity>
+            {bateria >= 20 ? ( // Verifica se a bateria é maior ou igual a 20% (0.2 representa 20%)
+                <ScrollView>
+                    <View style={styles.container}>
+                        <Image source={require('../assets/LogoBarbearia.png')} style={styles.imagem} />
+                        <Text style={styles.title}>{tipoDeAgenda ? "Agendar" : "Agendados"}</Text>
+                    </View>
+                    {tipoDeAgenda ? (
+                        <View style={styles.forms}>
+                            <TextInput
+                                placeholder="Salão"
+                                style={styles.input}
+                                onChangeText={setSalao}
+                                value={salao}
+                            />
+                            <TextInput
+                                placeholder="Serviço"
+                                style={styles.input}
+                                onChangeText={setServico}
+                                value={servico}
+                            />
+                            <TextInput
+                                placeholder="Data do Evento (YYYY-MM-DD)"
+                                style={styles.input}
+                                onChangeText={setDataEvento}
+                                value={dataEvento}
+                            />
                         </View>
-                    ))}
+                    ) : (
+                        <ScrollView style={styles.containerAgendados}>
+                            {eventosAgendados.map((evento, index) => (
+                                <View key={index} style={styles.formsAgendado}>
+                                    <Text>Nome do Salão: {evento.salao}</Text>
+                                    <Text>Nome do Evento: {evento.servico}</Text>
+                                    <Text>Data do Evento: {evento.dataEvento}</Text>
+                                    <TouchableOpacity onPress={() => excluirEvento(index)} style={styles.excluirBtn}>
+                                        <Text style={styles.btnText}>Excluir</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            ))}
+                        </ScrollView>
+                    )}
+                    <View style={styles.containerButton}>
+                        {!tipoDeAgenda ? "" : (
+                            <TouchableOpacity onPress={salvarEvento} style={styles.login}>
+                                <Text style={styles.btnText}>Agendar Evento</Text>
+                            </TouchableOpacity>
+                        )}
+                        {tipoDeAgenda ? "" : (
+                            <TouchableOpacity onPress={limparEventos} style={styles.login}>
+                                <Text style={styles.btnText}>Apagar Tudo</Text>
+                            </TouchableOpacity>
+                        )}
+                        <TouchableOpacity onPress={() => setTipoDeAgenda(!tipoDeAgenda)} style={styles.login}>
+                            <Text style={styles.btnText}>{tipoDeAgenda ? "Agendados" : "Agendar"}</Text>
+                        </TouchableOpacity>
+                    </View>
                 </ScrollView>
+            ) : (
+                <View>
+                    <Text>Sem bateria suficiente, recarregue o seu celular</Text>
+                </View>
             )}
-            </ScrollView>
-            <View style={styles.containerButton}>
-                {!tipoDeAgenda ? "" : (
-                    <TouchableOpacity onPress={salvarEvento} style={styles.login}>
-                        <Text style={styles.btnText}>Agendar Evento</Text>
-                    </TouchableOpacity>
-                )}
-                {tipoDeAgenda ? "" : (
-                    <TouchableOpacity onPress={limparEventos} style={styles.login}>
-                        <Text style={styles.btnText}>Apagar Tudo</Text>
-                    </TouchableOpacity>
-                )}
-                <TouchableOpacity onPress={() => setTipoDeAgenda(!tipoDeAgenda)} style={styles.login}>
-                    <Text style={styles.btnText}>{tipoDeAgenda ? "Agendados" : "Agendar"}</Text>
-                </TouchableOpacity>
-            </View>
         </>
     );
-}
+}    
 
 const styles = StyleSheet.create({
     container: {

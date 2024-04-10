@@ -1,15 +1,39 @@
 import { Image, Text, View, StyleSheet, TextInput, TouchableOpacity, ScrollView, Dimensions } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function CadastroSalao() {
     const [rua, setRua] = useState("");
     const [bairro, setBairro] = useState("");
     const [casa, setCasa] = useState("");
     const [cep, setCep] = useState("");
+    const [enderecosSalvos, setEnderecosSalvos] = useState([]);
 
-    function Salvar() {
-        // Implemente a lógica de salvar aqui
-    }
+    useEffect(() => {
+        obterEnderecosSalvos();
+    }, []);
+
+    const salvarEndereco = async () => {
+        try {
+            const novoEndereco = { rua, bairro, casa, cep };
+            const enderecos = [...enderecosSalvos, novoEndereco];
+            await AsyncStorage.setItem('enderecos', JSON.stringify(enderecos));
+            setEnderecosSalvos(enderecos);
+        } catch (error) {
+            console.error('Erro ao salvar endereço:', error);
+        }
+    };
+
+    const obterEnderecosSalvos = async () => {
+        try {
+            const enderecosJSON = await AsyncStorage.getItem('enderecos');
+            if (enderecosJSON) {
+                setEnderecosSalvos(JSON.parse(enderecosJSON));
+            }
+        } catch (error) {
+            console.error('Erro ao obter endereços salvos:', error);
+        }
+    };
 
     return (
         <ScrollView contentContainerStyle={styles.scrollViewContainer} keyboardShouldPersistTaps="handled">
@@ -25,29 +49,31 @@ export default function CadastroSalao() {
                     onChangeText={(digitado) => setRua(digitado)}
                 />
                 <TextInput
-                    placeholder="Seu CNPJ"
+                    placeholder="Seu Bairro"
                     style={styles.input}
                     value={bairro}
                     onChangeText={(digitado) => setBairro(digitado)}
                 />
                 <TextInput
-                    placeholder="Seu Endereço"
+                    placeholder="Número da Casa"
                     style={styles.input}
                     value={casa}
                     onChangeText={(digitado) => setCasa(digitado)}
                 />
                 <TextInput
-                    placeholder="Seu Email"
+                    placeholder="CEP"
                     style={styles.input}
                     value={cep}
                     onChangeText={(digitado) => setCep(digitado)}
                 />
-                <TouchableOpacity onPress={Salvar} style={styles.localizacao}>
-                    <Text style={styles.btnText}>Usar Localização Atual</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={Salvar} style={styles.cadastro}>
+                <TouchableOpacity onPress={salvarEndereco} style={styles.cadastro}>
                     <Text style={styles.btnText}>Cadastrar Endereço</Text>
                 </TouchableOpacity>
+                {enderecosSalvos.length > 0 && (
+                    <TouchableOpacity onPress={() => console.log(enderecosSalvos)} style={styles.localizacao}>
+                        <Text style={styles.btnText}>Endereço Cadastrado</Text>
+                    </TouchableOpacity>
+                )}
             </View>
         </ScrollView>
     );
@@ -65,15 +91,15 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     imagem: {
-        width: windowWidth * 0.7, // Definindo a largura da imagem como 70% da largura da tela
-        height: windowHeight * 0.3, // Definindo a altura da imagem como 30% da altura da tela
+        width: windowWidth * 0.7,
+        height: windowHeight * 0.3,
     },
     input: {
         width: "100%",
         height: 60,
         borderBottomWidth: 2,
         padding: 2,
-        marginTop: 10, // Reduzindo a margem superior dos inputs
+        marginTop: 10,
     },
     forms: {
         width: "90%",
@@ -95,11 +121,6 @@ const styles = StyleSheet.create({
     btnText: {
         color: "white",
         fontSize: 20,
-    },
-    salao: {
-        textAlign: "center",
-        textDecorationLine: "underline",
-        color: "blue",
     },
     localizacao: {
         backgroundColor: "#ED2839",

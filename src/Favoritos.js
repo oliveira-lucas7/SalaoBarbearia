@@ -10,11 +10,7 @@ export default function Favoritos({ titulo, imagem }) {
 
   async function getStatus() {
     const status = await Network.getNetworkStateAsync();
-    if (status.isConnected && status.type === Network.NetworkStateType.WIFI) {
-      setRede(true);
-    } else {
-      setRede(false);
-    }
+    setRede(status.isConnected && status.type === Network.NetworkStateType.WIFI);
   }
 
   useEffect(() => {
@@ -30,23 +26,29 @@ export default function Favoritos({ titulo, imagem }) {
       {rede ? (
         <FlatList
           data={favoritos}
-          renderItem={({ item }) => (
+          renderItem={({item}) => (
             <Salao titulo={item} imagem={item.image} />
           )}
           keyExtractor={(item) => item.id}
           numColumns={2}
         />
       ) : (
-        <Text style={styles.textInternet}>Conecte-se a internet para ver os seus salões favoritos</Text>
+        <View style={styles.container}>
+          <Text style={styles.textInternet}>Conecte-se à internet para ver os seus salões favoritos</Text>
+        </View>
       )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  textInternet: {
-    textAlign: "center",
-    justifyContent: "center",
-    fontSize: 25,
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-})
+  textInternet: {
+    fontSize: 25,
+    textAlign: 'center',
+  },
+});

@@ -2,11 +2,11 @@ import React, { useContext } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
+//Components
 import Home from './Home';
 import Agendar from './Agendar';
-import Menu from './Menu';
 import Favoritos from './Favoritos';
-import Login from './Login';
 import Endereco from './Endereco'
 import { UserContext } from './Context/UserContext';
 
@@ -62,7 +62,7 @@ export default function Rotas() {
           options={{
             tabBarLabel: 'Endereco',
             tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons name="account" color={color} size={size} />
+              <MaterialCommunityIcons name="google-maps" color={color} size={size} />
             ),
           }}
         />
