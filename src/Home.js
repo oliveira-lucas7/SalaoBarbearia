@@ -176,7 +176,7 @@ const Carrossel = () => {
 
 export default function Home({ navigation }) {
     return (
-        <ScrollView style={styles.container}>
+        <View style={styles.container}>
             <Carrossel />
             <FlatList
                 data={dados}
@@ -186,7 +186,7 @@ export default function Home({ navigation }) {
                 horizontal={false}
                 numColumns={2}
             />
-        </ScrollView>
+        </View>
     );
 }
 

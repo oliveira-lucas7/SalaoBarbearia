@@ -7,6 +7,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Home from './Home';
 import Agendar from './Agendar';
 import Favoritos from './Favoritos';
+import Login from './Login';
 import Endereco from './Endereco'
 import { UserContext } from './Context/UserContext';
 

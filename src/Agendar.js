@@ -135,7 +135,7 @@ export default function Agendar() {
 
     return (
         <>
-            {bateria >= 20 ? ( // Verifica se a bateria é maior ou igual a 20% (0.2 representa 20%)
+            {bateria >= 20 ? ( 
                 <ScrollView>
                     <View style={styles.container}>
                         <Image source={require('../assets/LogoBarbearia.png')} style={styles.imagem} />

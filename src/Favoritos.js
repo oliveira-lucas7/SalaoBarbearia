@@ -6,24 +6,20 @@ import * as Network from 'expo-network';
 
 export default function Favoritos({ titulo, imagem }) {
   const { favoritos } = useFavoritos();
-  const [rede, setRede] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
 
-  async function getStatus() {
+  async function checkInternetConnection() {
     const status = await Network.getNetworkStateAsync();
-    setRede(status.isConnected && status.type === Network.NetworkStateType.WIFI);
+    setIsConnected(status.isConnected);
   }
 
   useEffect(() => {
-    getStatus();
+    checkInternetConnection();
   }, []);
-
-  useEffect(() => {
-    getStatus();
-  }, [rede]);
 
   return (
     <View>
-      {rede ? (
+      {isConnected ? (
         <FlatList
           data={favoritos}
           renderItem={({item}) => (
